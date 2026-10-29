@@ -12,4 +12,5 @@ $('submit').onclick=()=>{const name=$('name').value.trim(),guess=$('guess').valu
 $('close').onclick=()=>{state.closed=!state.closed;save();refresh()};
 $('draw').onclick=()=>{if(!state.closed)return $('winner').textContent='請先截止預測。';const eligible=state.entries.filter(e=>e.guess===$('actual').value);if(!eligible.length)return $('winner').textContent='目前沒有猜對的參加者。';const bytes=new Uint32Array(1);crypto.getRandomValues(bytes);const selected=eligible[bytes[0]%eligible.length];$('winner').textContent='🎊 恭喜 '+selected.name+' 🎊\n猜對 '+items[Number(selected.guess)]};
 $('reset').onclick=()=>{if(confirm('確定清除這台裝置的所有示範資料？')){localStorage.removeItem(key);state={closed:false,entries:[]};$('winner').textContent='';refresh()}};refresh();
-</script></body></html>
+</script>
+</body></html>
