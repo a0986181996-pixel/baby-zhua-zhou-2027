@@ -1,32 +1,213 @@
 <!doctype html>
-<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>黃誠祐｜抓周預測</title><style>
-:root{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif;color:#635044;background:#faf4eb}*{box-sizing:border-box}body{margin:0}main{max-width:540px;margin:auto;padding:30px 18px 60px}.card{background:#fffdf9;border:1px solid #e9d9c8;border-radius:24px;padding:25px;box-shadow:0 10px 35px #947b6420;margin:18px 0}.eyebrow{text-align:center;letter-spacing:3px;color:#a48769}h1{text-align:center;font-size:32px;margin:10px 0;color:#89664d}h2{font-size:21px;color:#8d6d56}p{line-height:1.7}.subtitle{text-align:center;color:#947e6a}.badge{background:#f2e5d7;color:#856b56;border-radius:30px;padding:9px 16px;display:inline-block}.center{text-align:center}.icon{font-size:58px;text-align:center;margin:18px}label{display:block;margin:15px 0 8px;font-weight:600}input,select,button{width:100%;border-radius:13px;font:inherit;padding:14px;border:1px solid #d9c6b3;background:#fff}button{background:#b78f6f;color:white;font-weight:700;border:0;margin-top:16px;cursor:pointer}button.secondary{background:#e8d9c9;color:#604c3e}button:disabled{opacity:.45}small{color:#967d6b}#notice{padding:10px;border-radius:12px;margin-top:12px;background:#f4eadd;display:none}.winner{font-size:25px;text-align:center;color:#aa7950;font-weight:bold;white-space:pre-wrap}.foot{text-align:center;font-size:12px;color:#967e6d}details summary{cursor:pointer;font-weight:700;color:#80624e}hr{border:0;border-top:1px solid #ecded0;margin:25px 0}
-</style></head><body><main><div class="eyebrow">BABY'S FIRST BIRTHDAY</div><div class="icon">🧸</div><h1>黃誠祐 · 抓周預測</h1><p class="subtitle">猜猜寶貝會抓到什麼呢？<br>猜對的親友，就有機會抽中幸運好禮 ♡</p><div class="center"><span class="badge">2027 · 幸福抓周派對</span></div><section class="card"><h2>🎀 我要參加預測</h2><p>每位親友限登記一次。抓周前記得送出答案！</p><label for="name">您的稱呼</label><input id="name" maxlength="30" placeholder="例如：小美阿姨"><label for="guess">預測寶寶會抓到的物品</label><select id="guess"></select><button id="submit">送出我的預測 ♡</button><div id="notice" role="status"></div><small>此版本為單機示範，資料僅保存在目前這台裝置。</small></section><section class="card"><details><summary>🔐 主辦人操作區（示範）</summary><p><small>正式上線前需連接資料庫並設定安全的管理員權限；目前僅供流程測試。</small></p><p id="status"></p><button class="secondary" id="close">截止／重新開放預測</button><label for="actual">寶寶實際抓到的物品</label><select id="actual"></select><button id="draw">從猜對的人中抽出 1 位得主</button><p id="count"></p><div id="winner" class="winner"></div><hr><button class="secondary" id="reset">清除本機示範資料</button></details></section><p class="foot">Made with love for 誠祐 ♡</p></main> <script type="module">
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>黃誠祐｜抓周預測</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif;color:#635044;background:#faf4eb}
+*{box-sizing:border-box}body{margin:0}
+main{max-width:540px;margin:auto;padding:30px 18px 60px}
+.card{background:#fffdf9;border:1px solid #e9d9c8;border-radius:24px;padding:25px;margin:18px 0}
+.eyebrow,.center,.subtitle,h1,.winner,.foot{text-align:center}
+.eyebrow{letter-spacing:3px;color:#a48769}
+h1{font-size:30px;color:#89664d}h2{font-size:21px;color:#8d6d56}
+p{line-height:1.7}.subtitle,small{color:#947e6a}
+.icon{font-size:58px;text-align:center;margin:18px}
+.badge{background:#f2e5d7;border-radius:30px;padding:9px 16px;display:inline-block}
+label{display:block;margin:15px 0 8px;font-weight:600}
+input,select,button{width:100%;border-radius:13px;font:inherit;padding:14px;border:1px solid #d9c6b3;background:white}
+button{background:#b78f6f;color:white;font-weight:700;border:0;margin-top:16px;cursor:pointer}
+button.secondary{background:#e8d9c9;color:#604c3e}
+button:disabled{opacity:.45;cursor:default}
+.message{white-space:pre-wrap;line-height:1.6}
+.winner{font-size:25px;color:#aa7950;font-weight:bold;white-space:pre-wrap}
+.foot{font-size:12px}summary{cursor:pointer;font-weight:700}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">BABY'S FIRST BIRTHDAY</div>
+<div class="icon">🧸</div>
+<h1>黃誠祐 · 抓周預測</h1>
+<p class="subtitle">猜猜寶貝會抓到什麼呢？<br>猜對的親友，就有機會抽中幸運好禮 ♡</p>
+<div class="center"><span class="badge">2027 · 幸福抓周派對</span></div>
+
+<section class="card">
+<h2>🎀 我要參加預測</h2>
+<p>每個瀏覽器身分限登記一次，請勿重複參加。</p>
+<p id="publicStatus" class="message" role="status">正在連線……</p>
+<label for="name">您的稱呼</label>
+<input id="name" maxlength="30" placeholder="例如：小美阿姨">
+<label for="guess">預測寶寶會抓到的物品</label>
+<select id="guess"></select>
+<button id="submit" disabled>送出我的預測 ♡</button>
+<p id="notice" class="message" role="status"></p>
+<small>預測儲存在雲端，由主辦人查看與抽獎。</small>
+</section>
+
+<section class="card">
+<details>
+<summary>🔐 主辦人操作區</summary>
+<form id="loginForm">
+<label for="email">管理員電子郵件</label>
+<input id="email" type="email" autocomplete="username" required>
+<label for="password">管理員密碼</label>
+<input id="password" type="password" autocomplete="current-password" required>
+<button id="login" type="submit">管理員登入</button>
+</form>
+<p id="adminNotice" class="message" role="status"></p>
+<div id="adminPanel" hidden>
+<p id="count">正在讀取名單……</p>
+<button id="initialize" class="secondary">初始化活動／開放預測</button>
+<button id="close" class="secondary" disabled>截止／重新開放預測</button>
+<label for="actual">寶寶實際抓到的物品</label>
+<select id="actual"></select>
+<button id="draw" disabled>從猜對的人中抽出 1 位得主</button>
+<div id="winner" class="winner"></div>
+<p id="names" class="message"></p>
+</div>
+<button id="logout" class="secondary" hidden>登出管理員</button>
+</details>
+</section>
+<p class="foot">Made with love for 誠祐 ♡</p>
+</main>
+
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getDatabase , ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
-  const firebaseConfig = {
-  apiKey: "AIzaSyAZqvCCXThWxqt5NMycqIkcXz7sh481buo",
-  authDomain: "baby-zhua-zhou-2027.firebaseapp.com",
-  projectId: "baby-zhua-zhou-2027",
-  databaseURL: "https://baby-zhua-zhou-2027-default-rtdb.firebaseio.com", 
-  storageBucket: "baby-zhua-zhou-2027.firebasestorage.app",
-  messagingSenderId: "1011408919627",
-  appId: "1:1011408919627:web:45ad90dcd0cf94fe5f01ce",
-  measurementId: "G-LNHZVSEZK5"
+import { getDatabase, ref, set, get, update, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyAZqvCCXThWxqt5NMycqIkcXz7sh481buo",
+  authDomain:"baby-zhua-zhou-2027.firebaseapp.com",
+  projectId:"baby-zhua-zhou-2027",
+  databaseURL:"https://baby-zhua-zhou-2027-default-rtdb.firebaseio.com",
+  storageBucket:"baby-zhua-zhou-2027.firebasestorage.app",
+  messagingSenderId:"1011408919627",
+  appId:"1:1011408919627:web:45ad90dcd0cf94fe5f01ce"
+});
+const db=getDatabase(app),auth=getAuth(app);
+const ADMIN="hplRT922nOgszaIZhKopqoanlTP2";
+const base="zhua2027";
+const $=id=>document.getElementById(id);
+const items=["印章 🏛️","算盤 🧮","書本 📚","畫筆 🎨","聽診器 🩺","麥克風 🎤","足球 ⚽","積木 🧱","滑鼠 🖱️","鍋鏟 🍳","尺 📏","錢幣 🪙"];
+let settings=null,entries=null,mine=null,busy=false;
+let stopMine=()=>{},stopEntries=()=>{};
+for(const id of ["guess","actual"]){
+  items.forEach((text,i)=>{
+    const option=document.createElement("option");
+    option.value=String(i);option.textContent=text;
+    $(id).append(option);
+  });
+}
+function errorText(e){
+  if(e.code==="auth/invalid-credential")return "電子郵件或密碼不正確。";
+  if(e.code==="auth/operation-not-allowed")return "Firebase 尚未啟用這種登入方式，請截圖此提示。";
+  if(/permission/i.test(e.code||e.message||""))return "資料庫權限不足，請截圖此提示以核對規則與管理員 UID。";
+  return "操作失敗："+(e.code||e.message||"請稍後再試");
+}
+function render(){
+  const admin=auth.currentUser?.uid===ADMIN;
+  const ready=typeof settings?.closed==="boolean";
+  $("submit").disabled=busy||!auth.currentUser||!ready||settings.closed||!!mine||admin;
+  $("publicStatus").textContent=!ready
+    ?"活動尚未準備完成，請主辦人登入後初始化。"
+    :settings.closed?"預測已截止。"
+    :mine?"你已成功登記預測。"
+    :admin?"目前以管理員身分登入；親友可從自己的手機參加。"
+    :"目前開放預測 ♡";
+  $("adminPanel").hidden=!admin;
+  $("loginForm").hidden=!!auth.currentUser&&!auth.currentUser.isAnonymous;
+  $("logout").hidden=!auth.currentUser||auth.currentUser.isAnonymous;
+  $("initialize").hidden=ready;
+  $("close").disabled=!ready;
+  $("close").textContent=settings?.closed?"重新開放預測":"截止預測";
+  $("draw").disabled=!ready||!settings.closed||entries===null;
+}
+onValue(ref(db,base+"/public"),snap=>{
+  settings=snap.val();render();
+},e=>{$("publicStatus").textContent=errorText(e);$("submit").disabled=true;});
+
+onAuthStateChanged(auth,async user=>{
+  stopMine();stopEntries();mine=null;entries=null;
+  $("names").textContent="";$("winner").textContent="";
+  render();
+  if(!user){
+    try{await signInAnonymously(auth);}
+    catch(e){$("notice").textContent=errorText(e);}
+    return;
+  }
+  if(user.uid===ADMIN){
+    $("adminNotice").textContent="管理員登入成功。";
+    stopEntries=onValue(ref(db,base+"/entries"),snap=>{
+      entries=snap.val()||{};
+      const list=Object.values(entries);
+      $("count").textContent="雲端登記："+list.length+" 人";
+      $("names").textContent=list.map(e=>e.name+"："+(items[Number(e.guess)]||e.guess)).join("\n");
+      render();
+    },e=>{$("adminNotice").textContent=errorText(e);});
+  }else{
+    if(!user.isAnonymous)$("adminNotice").textContent="此帳號沒有管理員權限，請登出後使用指定帳號。";
+    stopMine=onValue(ref(db,base+"/entries/"+user.uid),snap=>{
+      mine=snap.val();render();
+    },e=>{$("notice").textContent=errorText(e);});
+  }
+});
+
+$("loginForm").onsubmit=async event=>{
+  event.preventDefault();$("login").disabled=true;
+  try{
+    await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);
+    $("password").value="";
+  }catch(e){$("adminNotice").textContent=errorText(e);}
+  finally{$("login").disabled=false;}
 };
-
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-const items=['印章 🏛️','算盤 🧮','書本 📚','畫筆 🎨','聽診器 🩺','麥克風 🎤','足球 ⚽','積木 🧱','滑鼠 🖱️','鍋鏟 🍳','尺 📏','錢幣 🪙'];
-const key='zhua-zhou-demo-2027';let state;try{state=JSON.parse(localStorage.getItem(key))||{closed:false,entries:[]}}catch{state={closed:false,entries:[]}};
-const $=id=>document.getElementById(id),save=()=>localStorage.setItem(key,JSON.stringify(state));
-for(const id of ['guess','actual']){items.forEach((v,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=v;$(id).appendChild(o)})}
-function refresh(){ $('status').textContent=state.closed?'目前狀態：已截止':'目前狀態：開放預測';$('count').textContent='本機示範登記：'+state.entries.length+' 人';$('submit').disabled=state.closed;$('close').textContent=state.closed?'重新開放預測':'截止預測';}
-function notice(s){$('notice').textContent=s;$('notice').style.display='block'}
-$('submit').onclick=()=>{const name=$('name').value.trim(),guess=$('guess').value;if(state.closed)return notice('預測已截止。');if(!name)return notice('請先輸入稱呼。');if(state.entries.some(e=>e.name===name))return notice('此稱呼已登記過，請勿重複送出。');state.entries.push({name,guess});save();refresh();notice('🎉 預測成功！祝你好運！');$('name').value=''};
-$('close').onclick=()=>{state.closed=!state.closed;save();refresh()};
-$('draw').onclick=()=>{if(!state.closed)return $('winner').textContent='請先截止預測。';const eligible=state.entries.filter(e=>e.guess===$('actual').value);if(!eligible.length)return $('winner').textContent='目前沒有猜對的參加者。';const bytes=new Uint32Array(1);crypto.getRandomValues(bytes);const selected=eligible[bytes[0]%eligible.length];$('winner').textContent='🎊 恭喜 '+selected.name+' 🎊\n猜對 '+items[Number(selected.guess)]};
-$('reset').onclick=()=>{if(confirm('確定清除這台裝置的所有示範資料？')){localStorage.removeItem(key);state={closed:false,entries:[]};$('winner').textContent='';refresh()}};refresh();
-
+$("logout").onclick=async()=>{
+  try{await signOut(auth);$("adminNotice").textContent="已登出。";}
+  catch(e){$("adminNotice").textContent=errorText(e);}
+};
+$("initialize").onclick=async()=>{
+  try{
+    const path=ref(db,base+"/public");
+    const snap=await get(path);
+    if(typeof snap.val()?.closed!=="boolean"){
+      await update(path,{closed:false,roundId:"first"});
+    }
+    $("adminNotice").textContent="活動已準備完成，可以讓親友參加了。";
+  }catch(e){$("adminNotice").textContent=errorText(e);}
+};
+$("submit").onclick=async()=>{
+  const user=auth.currentUser,name=$("name").value.trim();
+  if(!user||busy||mine||settings?.closed!==false)return;
+  if(!name){$("notice").textContent="請先輸入稱呼。";return;}
+  busy=true;render();
+  try{
+    await set(ref(db,base+"/entries/"+user.uid),{
+      name,guess:$("guess").value,createdAt:serverTimestamp()
+    });
+    $("notice").textContent="🎉 預測已成功儲存到雲端！祝你好運！";
+    $("name").value="";
+  }catch(e){$("notice").textContent=errorText(e);}
+  finally{busy=false;render();}
+};
+$("close").onclick=async()=>{
+  try{
+    await set(ref(db,base+"/public/closed"),!settings.closed);
+    $("adminNotice").textContent="活動狀態已更新。";
+  }catch(e){$("adminNotice").textContent=errorText(e);}
+};
+$("draw").onclick=()=>{
+  if(settings?.closed!==true||entries===null)return;
+  const eligible=Object.values(entries).filter(e=>e.guess===$("actual").value);
+  if(!eligible.length){$("winner").textContent="目前沒有猜對的參加者。";return;}
+  const bytes=new Uint32Array(1);
+  const limit=4294967296-(4294967296%eligible.length);
+  do{crypto.getRandomValues(bytes);}while(bytes[0]>=limit);
+  const selected=eligible[bytes[0]%eligible.length];
+  $("winner").textContent="🎊 恭喜 "+selected.name+" 🎊\n猜對 "+items[Number(selected.guess)];
+};
 </script>
-</body></html>
+</body>
+</html>
